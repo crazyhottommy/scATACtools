@@ -15,7 +15,7 @@ Options:
     --height=<height> Height of the output [default: 4]
 
 Arguments:
-    input  fragment length in a one column dataframe without header
+    input  fragment length in a one column dataframe without header or stdin
     output  output filename
 ' -> doc
 
@@ -34,7 +34,32 @@ arguments <- docopt(doc, version = 'plot_atac_frag_distribution v1.0\n\n')
 # for testing interactively
 #arguments <- docopt(doc, version = 'FragmentSizeDistribution v1.0', args = c("scripts/fragment3.txt","my.pdf"))
 #print(arguments)
-fragment<- read.table(arguments$input, header = F)
+
+## File Read ##
+# taken from https://stackoverflow.com/questions/26152998/how-to-make-r-script-takes-input-from-pipe-and-user-given-parameter
+# if the input is stdin one can do 
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf - out.pdf
+# ./plot_atac_frag_distribution.R --poly --pdf <(cat fragment.txt)  out.pdf
+
+
+OpenRead <- function(arg) {
+    if (arg %in% c("-", "/dev/stdin")) {
+        file("stdin", open = "r")
+    } else if (grepl("^/dev/fd/", arg)) {
+        fifo(arg, open = "r")
+    } else {
+        file(arg, open = "r")
+    }
+}
+
+dat.con <- OpenRead(arguments$input)
+fragment <- read.table(dat.con, header = FALSE)
+
+#fragment<- read.table(arguments$input, header = F)
+#fragment<- read.table(arguments$`-`, header = F)
+#input<-file('stdin', 'r')
+
 names(fragment)<- c("length")
 
 plot_hist<- function(fragment, bin) {
