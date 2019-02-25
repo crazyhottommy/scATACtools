@@ -57,8 +57,6 @@ dat.con <- OpenRead(arguments$input)
 fragment <- read.table(dat.con, header = FALSE)
 
 #fragment<- read.table(arguments$input, header = F)
-#fragment<- read.table(arguments$`-`, header = F)
-#input<-file('stdin', 'r')
 
 names(fragment)<- c("length")
 
