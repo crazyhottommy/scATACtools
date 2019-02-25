@@ -19,21 +19,21 @@ Arguments:
     output  output filename
 ' -> doc
 
-library(ggplot2)
+suppressMessages(library(ggplot2))
 # check this awesome docoptR https://github.com/docopt/docopt.R
 ## make sure use the development version, the CRAN version not working for me
 # library(devtools) 
 # devtools::install_github("docopt/docopt.R")
-library(docopt)
-library(dplyr)
+suppressMessages(library(docopt))
+suppressMessages(library(dplyr))
 
 # this will give error if try interactively, because no input and output argument are given
 # https://github.com/docopt/docopt.R/issues/27
-arguments <- docopt(doc, version = 'plot_atac_frag_distribution v1.0')
+arguments <- docopt(doc, version = 'plot_atac_frag_distribution v1.0\n\n')
 
 # for testing interactively
 #arguments <- docopt(doc, version = 'FragmentSizeDistribution v1.0', args = c("scripts/fragment3.txt","my.pdf"))
-print(arguments)
+#print(arguments)
 fragment<- read.table(arguments$input, header = F)
 names(fragment)<- c("length")
 
@@ -58,13 +58,19 @@ plot_polygon<- function(fragment, bin){
 }
 
 
-if (arguments$poly){
+main<- function(fragment, arguments){
+    if (arguments$poly){
         g<- plot_polygon(fragment, as.numeric(arguments$bin))
-} else if (arguments$hist){
+    } else if (arguments$hist){
         g<- plot_hist(fragment, as.numeric(arguments$bin))
+    }
+    device<- ifelse(arguments$pdf, "pdf", "png")
+    
+    ggsave(arguments$output, plot = g,  device = device, width =as.numeric(arguments$width), 
+           height = as.numeric(arguments$height) )
+    
 }
 
-device<- ifelse(arguments$pdf, "pdf", "png")
+main(fragment, arguments)
 
-ggsave(arguments$output, plot = g,  device = device, width =as.numeric(arguments$width), 
-       height = as.numeric(arguments$height) )
+
