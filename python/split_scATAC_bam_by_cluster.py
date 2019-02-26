@@ -12,6 +12,7 @@ parser.add_argument("csv", help="Required. the FULL path to the cluster csv file
 parser.add_argument("bam", help="Required. the FULL path to the 10x scATAC bam file generated \
     by cellranger-atac count")
 parser.add_argument("-prefix", help="Optional, the prefix of the output bam, default is cluster_id.bam")
+parser.add_argument("-outdir", help="Optional, the output directory for the splitted bams, default is current dir")
 args = parser.parse_args()
 
 
@@ -27,6 +28,14 @@ else:
     print("10x scATAC bam not found")
     sys.exit(1)
 
+
+if os.path.isdir(args.outdir):
+    pass
+else:
+    try:
+        os.mkdir(args.outdir)
+    except OSError:
+        print("can not create directory {}".format(args.outdir))
 
 cluster_dict = {}
 with open(args.csv) as csv_file:
@@ -45,9 +54,13 @@ fin = pysam.AlignmentFile(args.bam, "rb")
 fouts_dict = {}
 for cluster in clusters:
     if args.prefix:
-        fout = pysam.AlignmentFile(args.prefix + "_cluster_" + cluster + ".bam", "wb", template = fin)
+        fout_name = args.prefix + "_cluster_" + cluster + ".bam"
     else:
-        fout = pysam.AlignmentFile("cluster_" + cluster + ".bam", "wb", template = fin)
+        fout_name = "cluster_" + cluster + ".bam"
+    if args.outdir:
+        fout = pysam.AlignmentFile(os.path.join(args.outdir,fout_name), "wb", template = fin)
+    else:
+        fout = pysam.AlignmentFile(fout_name, "wb", template = fin)
     fouts_dict[cluster] = fout
 
 for read in fin:
