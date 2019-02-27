@@ -43,6 +43,6 @@ check_file_exists
 #| sed -e 's/^[ \t]*//' | awk '{print $1"\t"$2}' > $out
 
 # this is better for downstream R plotting using the raw data
-samtools view $bam | awk '$9>0' | cut -f 9 > $out
+samtools view $bam | awk '{ if ($9>0) print $9}' > $out
 
 
