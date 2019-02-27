@@ -12,6 +12,7 @@ Example:
 ${0##*/} fragment.txt 
 ${0##*/} fragment.txt 150 350
 samtools view my.bam | awk '{ if (\$9>0) print \$9}' | ${0##*/} - 
+samtools view my.bam | awk '{ if (\$9>0) print \$9}' | ${0##*/} - 150 300
 EOF
 }
 
@@ -21,4 +22,5 @@ file=${1:-/dev/stdin}
 low=${2:-100}
 high=${3:-300}
 
+if [[ "$low" -gt "$high" ]]; then echo "specifying low first and then high later"; exit 1; fi
 awk -v low=$low -v high=$high '$1>=low && $1<=high {++a} END {print a/NR}' $file
