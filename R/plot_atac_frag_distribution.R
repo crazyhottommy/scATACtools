@@ -1,7 +1,7 @@
 #! /usr/bin/env Rscript
 'Plot fragment length distribution from ATACseq data
 Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] <input> <output>
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=<width> --height=<height> --bin=<bp>] <input> <output>
     
 Options:
     -h --help  Show this screen.
