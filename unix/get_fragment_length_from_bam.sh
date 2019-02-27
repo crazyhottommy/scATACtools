@@ -15,11 +15,15 @@ The output can be plotted to identify the ~200 bp peak
 see https://github.com/GreenleafLab/NucleoATAC/issues/18
 
 Usage: ${0##*/}  <path to bam file> <output txt file>
-Example: ${0##*/} my.bam my.txt
+Example: 
+# save to a file
+${0##*/} my.bam my.txt
+# send the output to stdout
+${0##*/} my.bam 
 EOF
 }
 
-if [[ $# -le 1 ]];then show_help;exit 1;fi
+if [[ $# == 0 ]];then show_help;exit 1;fi
 
 ## check if samtools in path
 
@@ -28,7 +32,7 @@ if [[ $# -le 1 ]];then show_help;exit 1;fi
 	install it by 'conda install -c bioconda samtools' on your machine" && exit 1)
 
 bam=$1
-out=$2
+out=${2:-/dev/stdout}
 
 check_file_exists() {
     if [ ! -f "${bam}" ]; then
