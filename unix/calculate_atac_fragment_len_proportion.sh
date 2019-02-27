@@ -7,7 +7,7 @@ get the proportion of fragment length fall into a range in ATACseq bam
 default is 100bp to 300bp. A successful ATACseq experiment has a 
 peak around 200bp in the fragment length distribution.
 
-Usage: ${0##*/}  <path to the fragment length file or stdin> 
+Usage: ${0##*/}  <path to the fragment length file or stdin> [ <low> <high> ]
 Example: 
 ${0##*/} fragment.txt 
 ${0##*/} fragment.txt 150 350
