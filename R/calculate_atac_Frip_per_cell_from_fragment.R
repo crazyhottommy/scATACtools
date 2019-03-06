@@ -3,6 +3,8 @@
 'Calculate Frip (Fraction of reads in peaks) from 10xscATACseq fragments.tsv.gz
 needs bioconductor libraries: Rsamtools, GenomicRanges, GenomicAlignments, rtracklayer
 and R package dplyr, data.table::fread
+This is much faster than the calculate_atac_Frip_per_cell_from_bam.R
+Takes 10mins for a 1G fragment.tsv.gz file 
 
 Usage:
     calculate_atac_Frip_per_cell_from_fragment.R <fragment> <bed>  <output>
