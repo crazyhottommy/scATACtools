@@ -33,6 +33,9 @@ get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, mapqFilter = 0)
         # Import alignments and get overlaps with peaks
         GA <- readGAlignments(bamfile, use.names = TRUE, param = ScanBamParam(
                 tag = c(barcodeTag), mapqFilter = 0))
+        ## some reads in the bam do not have CB tag, filter out
+        GA<- GA[!is.na(mcols(GA)[,barcodeTag])]
+        
         peaks<- import(peaks, format= "BED")
         ovPEAK <- findOverlaps(peaks, GA)
         
