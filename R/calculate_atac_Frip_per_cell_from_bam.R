@@ -3,6 +3,9 @@
 'Calculate Frip (Fraction of reads in peaks) from 10xscATACseq bam
 needs bioconductor libraries: Rsamtools, GenomicRanges, GenomicAlignments, rtracklayer
 and R package dplyr.
+It takes ~10 hours for a 20G 10x 5k pbmc bam file.
+use calculate_atac_Frip_per_cell_from_fragment.R if you want a faster solution.
+
 Usage:
     calculate_atac_Frip_per_cell.R <bam> <bed> [ barcode=<CB> ] <output>
     
@@ -17,7 +20,7 @@ Arguments:
 ' -> doc
 
 library(docopt)
-arguments <- docopt(doc, version = 'calculate_atac_Frip_per_cell.R v1.0\n\n')
+arguments <- docopt(doc, version = 'calculate_atac_Frip_per_cell_from_bam.R v1.0\n\n')
 
 ## the function was copied and modified from https://github.com/caleblareau/chromVARxx/blob/master/R/getCounts-tweaks.R
 ## thanks Caleb for sharing! bedtools maybe able to do the same thing, but need to test.
@@ -35,7 +38,7 @@ get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, mapqFilter = 0)
                 tag = c(barcodeTag), mapqFilter = 0))
         ## some reads in the bam do not have CB tag, filter out
         GA<- GA[!is.na(mcols(GA)[,barcodeTag])]
-        
+
         peaks<- import(peaks, format= "BED")
         ovPEAK <- findOverlaps(peaks, GA)
         
