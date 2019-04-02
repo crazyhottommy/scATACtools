@@ -2,17 +2,20 @@
 
 'Calculate Frip (Fraction of reads in peaks) from 10xscATACseq bam
 needs bioconductor libraries: Rsamtools, GenomicRanges, GenomicAlignments, rtracklayer
-and R package dplyr.
+and R package dplyr, readr.
 It takes ~10 hours for a 20G 10x 5k pbmc bam file.
 use calculate_atac_Frip_per_cell_from_fragment.R if you want a faster solution.
 
 Usage:
-    calculate_atac_Frip_per_cell.R <bam> <bed> [ barcode=<CB> ] <output>
+    calculate_atac_Frip_per_cell.R [ --barcode=<CB> --barcodeList=<FILE>]  <bam> <bed> <output>
     
 Options:
-    -h --help  Show this screen.
-    -v --version  Show version.
-    --barcode=<CB>  tag for cellbarcode [default: CB]
+    -h --help                Show this screen.
+    -v --version             Show version.
+    --barcode=<CB>           tag for cellbarcode [default: CB]
+    --barcodeList=<FILE>     input filename for the valid barcodes, one column dataframe without header
+                             (e.g. from cellranger filtered_peak_bc_matrix/barcodes.tsv), if not provided,
+                             all cell barcodes in the bam file will be calculated.
 Arguments:
     bam  input filename of 10x merged scATAC bam
     bed  input filename for the peaks in bed format
@@ -30,14 +33,25 @@ suppressMessages(library(GenomicRanges))
 suppressMessages(library(GenomicAlignments))
 suppressMessages(library(rtracklayer))
 suppressMessages(library(dplyr))
+suppressMessages(library(readr))
 
-get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, mapqFilter = 0){
+get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, barcodeList, validBarcodes, mapqFilter = 0){
         
         # Import alignments and get overlaps with peaks
         GA <- readGAlignments(bamfile, use.names = TRUE, param = ScanBamParam(
                 tag = c(barcodeTag), mapqFilter = 0))
         ## some reads in the bam do not have CB tag, filter out
         GA<- GA[!is.na(mcols(GA)[,barcodeTag])]
+        
+        ## filter only the valid barcodes if barcodeList is given
+        if (!is.null(barcodeList)){
+            validBarcodes<- read_tsv(barcodeList, col_names = F)
+            GA<- GA[mcols(GA)[, barcodeTag] %in% validBarcodes$X1]
+        }
+        
+        peaks_df<- read_tsv(peaks, col_names = F)
+        colnames(peaks_df)<- c("chr", "start", "end")
+        mat_rownames<- paste(peaks_df$chr, peaks_df$start, peaks_df$end, sep = ":")
 
         peaks<- import(peaks, format= "BED")
         ovPEAK <- findOverlaps(peaks, GA)
@@ -60,6 +74,9 @@ get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, mapqFilter = 0)
                                   x = c(countdf[,3],0))
         colnames(m) <- uniqueBarcodes
         
+    
+        m<- as.matrix(m)
+        rownames(m)<- mat_rownames
         # Generate colData
         depth <- data.frame(
                 sample = as.numeric(id),
@@ -69,14 +86,15 @@ get_counts_by_cellbarcode<- function(bamfile, peaks, barcodeTag, mapqFilter = 0)
                 sample = uniqueBarcodes,
                 depth = depth[,2],
                 FRIP = Matrix::colSums(m)/depth[,2])
-        return(colData)
+        return(list(m = m, colData= colData))
 }
 
 
-df<- get_counts_by_cellbarcode(arguments$bam, arguments$bed, barcodeTag = arguments$barcode)
-write.table(df, arguments$output, sep="\t", row.names = F, col.names = T, quote =F)
-
-
+df_list<- get_counts_by_cellbarcode(arguments$bam, arguments$bed, 
+                                    barcodeTag = arguments$barcode,
+                                    barcodeList = arguments$barcodeList)
+write.table(df_list$colData, arguments$output, sep="\t", row.names = F, col.names = T, quote =F)
+write.table(df_list$m, file = "matrix.txt", col.names = T, row.names = T, sep = "\t", quote =F)
 
 
         
