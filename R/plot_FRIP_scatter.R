@@ -25,7 +25,7 @@ suppressMessages(library(tidyverse))
 #library(ggrastr)
 library(ggExtra)
 frip<- read_tsv(arguments$FRIP)
-
+colnames(frip)<- c("sample", "depth", "FRIP")
 passed_barcodes<- read_tsv(arguments$barcode, col_names =F)
 
 frip<- frip %>% mutate(cellranger_pass = if_else(sample %in% passed_barcodes$X1, "yes", "no"))
