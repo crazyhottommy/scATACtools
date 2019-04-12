@@ -1,6 +1,17 @@
 # scATACutils
 utilities for 10x scATAC data 
 
+### Dependencies
+
+* python3
+libraries: `pysam`
+
+* R >3.5.1
+libraries : `docopt`, `dplyr`, `purrr`, `tidyr`, `readr` , `ggplot2`, `ggExtra`
+bioconductor libraries: `Rsamtools`, `GenomicRanges`, `GenomicAlignments`, `rtracklayer`
+
+All the R command line utilies uses `docopt` for argument parsing. Make sure you have it installed.
+
 ## Quality control
 
 ### Get the Fragment insert size from a 10x cellranger produced bam file
