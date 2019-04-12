@@ -3,6 +3,7 @@
 
 ## modified from https://github.com/shendurelab/mouse-atac/blob/master/banding_scores/get_insert_size_distribution_per_cell.py
 ## the 10x bam from cellranger put the cellbarcode in CB tag not in the read name
+## time ./get_insert_size_distribution_per_cell.py possorted_bam.bam pbmc_5k_insert_size.txt --barcodes ../atac_v1_pbmc_5k/outs/filtered_peak_bc_matrix/barcodes.tsv
 
 import pysam
 import argparse
@@ -36,8 +37,9 @@ if __name__ == '__main__':
 		# Get the insert size
 		insert_size = abs(alignment.tlen)
 
-		# Discount inferred insert sizes over 1000
-		if insert_size >= 1000:
+		# Discount inferred insert sizes over 1000 or 
+		# unpaired reads with tlen = 0
+		if insert_size >= 1000 or insert_size = 0:
 			continue
 
 		tags = alignment.tags
