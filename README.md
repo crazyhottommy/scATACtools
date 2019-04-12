@@ -1,12 +1,12 @@
 # scATACutils
 utilities for 10x scATAC data 
 
-### Dependencies
+## Dependencies
 
-* python3
+* python3  
 libraries: `pysam`
 
-* R >3.5.1
+* R >= 3.5.1  
 libraries : `docopt`, `dplyr`, `purrr`, `tidyr`, `readr` , `ggplot2`, `ggExtra`
 bioconductor libraries: `Rsamtools`, `GenomicRanges`, `GenomicAlignments`, `rtracklayer`
 
