@@ -64,3 +64,7 @@ for a bam file size of 20G containing 5000 cells and 12 clusters, it takes ~3 ho
 
 for a bam file size of 1G (one cluster) containing 285 cells, it takes ~7 mins.
 
+## visualization
+
+http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/
+
