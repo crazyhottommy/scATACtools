@@ -2,7 +2,7 @@
 
 ### TSS enrichment score
 
-from the supplementary method section of this paper: 
+from the supplementary method section of this paper [The chromatin accessibility landscape of primary human cancers](https://science.sciencemag.org/content/362/6413/eaav1898) 
 
 > the Library quality was assessed primarily by the transcription start site (TSS) enrichment
 score (see below). A cutoff of “4” was used to determine whether a library was of sufficient quality
@@ -34,3 +34,21 @@ the TSS after smoothing with a rolling mean every 51 bp. To calculate the fracti
 peaks, we calculated the number of insertions that overlapped a peak using “countOverlaps” and
 divided by the total number of insertions (number of fragments x 2, as each paired-end read
 represents an individual Tn5 insertion).
+
+from the method of [Massively parallel single-cell chromatin landscapes of human immune cell development and intratumoral T cell exhaustion](https://www.biorxiv.org/content/10.1101/610550v1)
+
+>Filtering Cells by TSS Enrichment and Unique Fragments
+Enrichment of ATAC-seq accessibility at TSS was used to quantify data quality without
+the need for a defined peak set. Calculating enrichment at TSS was performed as
+previously described48, and TSS positions were acquired from the Bioconductor package
+from “TxDb.Hsapiens.UCSC.hg19.knownGene”. Briefly, Tn5 corrected insertions were
+aggregated +/- 2,000 bp relative (TSS strand-corrected) to each unique TSS genome
+wide. Then this profile was normalized to the mean accessibility +/- 1,900-2,000 bp from
+the TSS and smoothed every 51bp in R. The calculated TSS enrichment represents the
+max of the smoothed profile at the TSS. We then filtered all single cells that had at least
+1,000 unique fragments and a TSS enrichment of 8 for all data sets.
+
+Note that each study uses a different cutoff of the TSS enrichment score.
+
+
+
