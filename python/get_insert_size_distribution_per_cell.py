@@ -3,7 +3,12 @@
 
 ## modified from https://github.com/shendurelab/mouse-atac/blob/master/banding_scores/get_insert_size_distribution_per_cell.py
 ## the 10x bam from cellranger put the cellbarcode in CB tag not in the read name
+## for a ~20G bam file with 5k cells.
 ## time ./get_insert_size_distribution_per_cell.py possorted_bam.bam pbmc_5k_insert_size.txt --barcodes ../atac_v1_pbmc_5k/outs/filtered_peak_bc_matrix/barcodes.tsv
+## real    125m31.042s
+## user    120m25.411s
+## sys     5m4.193s
+
 
 import pysam
 import argparse

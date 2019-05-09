@@ -50,5 +50,7 @@ max of the smoothed profile at the TSS. We then filtered all single cells that h
 
 Note that each study uses a different cutoff of the TSS enrichment score.
 
+* [ENCODE definition](https://www.encodeproject.org/data-standards/terms/#enrichment) not so clear to me..
 
+>Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp). This distribution is then normalized by taking the average read depth in the 100 bps at each of the end flanks of the distribution (for a total of 200bp of averaged data) and calculating a fold change at each position over that average read depth. This means that the flanks should start at 1, and if there is high read signal at transcription start sites (highly open regions of the genome) there should be an increase in signal up to a peak in the middle. We take the signal value at the center of the distribution after this normalization as our TSS enrichment metric. Used to evaluate ATAC-seq. 
 
