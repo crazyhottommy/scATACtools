@@ -48,6 +48,7 @@ constrainRanges = function(target, windows){
 #'
 #' @param frag_gz_file  fragment.tsv.gz file from 10x cellranger-atac output or 
 #' anyother tool but in the same format.
+#' @param cut_site whether or not use the the end of the read as a cutting site.
 #' @param txs  a txdb object
 #' @param flank flanking bp of tss (upstream and downstream)
 #' @param endFlank  bp end flanks of flank for local noise control
@@ -72,6 +73,7 @@ constrainRanges = function(target, windows){
 #' scores<- TssEnrichmentFromFrags("fragment.tsv.gz", txs = txs)
 
 TssEnrichmentFromFrags <- function(frag_gz_file,
+                               cut_site = TRUE,
                                txs,
                                flank = 1000,
                                endFlank = 100,
@@ -90,6 +92,13 @@ TssEnrichmentFromFrags <- function(frag_gz_file,
                 validBarcodes<- read_tsv(barcodeList, col_names = F)
                 frags_valid<- frags_valid[frags_valid$V4 %in% validBarcodes$X1]
         }
+        
+        if(cut_site){
+          frags_valid <- c(
+            GRanges(seqnames = seqnames(frags_valid), ranges = IRanges(start(frags_valid), start(frags_valid)), RG = mcols(fragments)[,"V4"]),
+            GRanges(seqnames = seqnames(fragments), ranges = IRanges(end(fragments), end(fragments)), RG = mcols(fragments)[,"V4"])
+          ) }
+    
         
         # common chromosome names 
         seqlev<- intersect(seqlevels(frags_valid), seqlevels(txs))
