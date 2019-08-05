@@ -28,14 +28,14 @@ else:
     print("10x scATAC bam not found")
     sys.exit(1)
 
-
-if os.path.isdir(args.outdir):
-    pass
-else:
-    try:
-        os.mkdir(args.outdir)
-    except OSError:
-        print("can not create directory {}".format(args.outdir))
+if args.outdir:
+    if os.path.isdir(args.outdir):
+        pass
+    else:
+        try:
+            os.mkdir(args.outdir)
+        except OSError:
+            print("can not create directory {}".format(args.outdir))
 
 cluster_dict = {}
 with open(args.csv) as csv_file:
