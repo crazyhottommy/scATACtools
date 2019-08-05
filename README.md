@@ -1,5 +1,5 @@
-# scATACutils
-utilities for 10x scATAC data 
+# scATACtools
+tools for 10x scATAC data 
 
 ## Dependencies
 
